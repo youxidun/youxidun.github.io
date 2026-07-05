@@ -1,0 +1,1287 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>游戏盾 SDK 接入说明 | Integration Guide</title>
+  <meta name="description" content="游戏盾 SDK 接入说明，覆盖 iOS、macOS、Android、Windows、Unity、Cocos Creator、Flutter、UniApp 平台。" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b13;
+      --bg-2: #0d1420;
+      --surface: rgba(15, 24, 38, 0.78);
+      --surface-strong: rgba(20, 31, 48, 0.94);
+      --text: #eef7ff;
+      --muted: #9bb1c9;
+      --soft: #607288;
+      --line: rgba(155, 177, 201, 0.18);
+      --accent: #2ee6a6;
+      --accent-2: #43a8ff;
+      --accent-3: #ffcf5b;
+      --danger: #ff6b86;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+      --radius: 8px;
+      --max: 1180px;
+      --grid: rgba(67, 168, 255, 0.11);
+      --hero-glow: rgba(46, 230, 166, 0.22);
+      --code-bg: #050912;
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f8fc;
+      --bg-2: #ffffff;
+      --surface: rgba(255, 255, 255, 0.78);
+      --surface-strong: rgba(255, 255, 255, 0.94);
+      --text: #0c1726;
+      --muted: #52657b;
+      --soft: #7e8da0;
+      --line: rgba(18, 35, 58, 0.12);
+      --accent: #00a979;
+      --accent-2: #0d78d8;
+      --accent-3: #c27a00;
+      --danger: #d72f55;
+      --shadow: 0 24px 70px rgba(30, 52, 84, 0.12);
+      --grid: rgba(13, 120, 216, 0.09);
+      --hero-glow: rgba(0, 169, 121, 0.16);
+      --code-bg: #101827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 82% 8%, var(--hero-glow), transparent 30rem),
+        radial-gradient(circle at 8% 18%, rgba(67, 168, 255, 0.16), transparent 28rem),
+        linear-gradient(180deg, var(--bg), var(--bg-2) 52%, var(--bg));
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      content: "";
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(180deg, #000 0%, transparent 72%);
+      pointer-events: none;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      width: min(100% - 40px, var(--max));
+      min-height: 74px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+      font-weight: 850;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--accent) 44%, var(--line));
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 24%, transparent), color-mix(in srgb, var(--accent-2) 18%, transparent));
+      box-shadow: inset 0 0 22px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .brand-mark svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-width: 112px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-strong) 84%, transparent);
+    }
+
+    .segmented button,
+    .icon-button {
+      border: 0;
+      border-radius: 6px;
+      color: var(--muted);
+      background: transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .segmented button {
+      min-height: 30px;
+      padding: 0 10px;
+    }
+
+    .segmented button.active {
+      color: var(--bg);
+      background: var(--accent);
+    }
+
+    .icon-button {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
+    }
+
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .section {
+      width: min(100% - 40px, var(--max));
+      margin: 0 auto;
+      padding: 82px 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 48px;
+      align-items: center;
+      padding-top: 64px;
+      padding-bottom: 52px;
+    }
+
+    .breadcrumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 760;
+    }
+
+    .breadcrumb span {
+      color: var(--soft);
+    }
+
+    .hero h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 78px);
+      line-height: 1.02;
+      font-weight: 920;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .gradient-text {
+      background: linear-gradient(100deg, var(--text), var(--accent) 48%, var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 740px;
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .doc-panel {
+      padding: 24px;
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+      border-radius: var(--radius);
+      background:
+        linear-gradient(145deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%),
+        color-mix(in srgb, var(--surface-strong) 92%, transparent);
+      box-shadow: var(--shadow);
+    }
+
+    .doc-panel h2 {
+      margin: 0 0 16px;
+      font-size: 25px;
+      line-height: 1.16;
+    }
+
+    .meta-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--bg) 36%, transparent);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .meta-row b {
+      color: var(--text);
+    }
+
+    .meta-row span {
+      min-width: 0;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-strong) 70%, transparent);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 760;
+    }
+
+    .section-head {
+      max-width: 820px;
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 50px);
+      line-height: 1.08;
+    }
+
+    .section-head p {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .overview-grid,
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .overview-card,
+    .platform-card,
+    .notice-card,
+    .support-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      box-shadow: 0 18px 54px color-mix(in srgb, #000 12%, transparent);
+    }
+
+    .overview-card {
+      min-height: 150px;
+      padding: 22px;
+    }
+
+    .overview-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+
+    .overview-card p,
+    .platform-card p,
+    .notice-card p,
+    .support-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .platform-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .platform-card {
+      overflow: hidden;
+    }
+
+    .platform-head {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 24px;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-strong) 60%, transparent);
+    }
+
+    .platform-index {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--accent-2) 42%, var(--line));
+      border-radius: var(--radius);
+      color: var(--accent-2);
+      font-weight: 900;
+    }
+
+    .platform-head h3 {
+      margin: 0 0 8px;
+      font-size: 25px;
+      line-height: 1.18;
+    }
+
+    .platform-body {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: 20px;
+      padding: 24px;
+    }
+
+    .subblock h4 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .subblock,
+    .platform-body > *,
+    pre {
+      min-width: 0;
+    }
+
+    .clean-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .clean-list li {
+      position: relative;
+      padding-left: 18px;
+    }
+
+    .clean-list li::before {
+      position: absolute;
+      top: 0.65em;
+      left: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      content: "";
+    }
+
+    pre {
+      max-height: 390px;
+      margin: 0;
+      overflow: auto;
+      border: 1px solid color-mix(in srgb, var(--accent-2) 24%, var(--line));
+      border-radius: var(--radius);
+      background: var(--code-bg);
+      color: #e8f4ff;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    pre code {
+      display: block;
+      min-width: 560px;
+      padding: 18px;
+      white-space: pre;
+    }
+
+    .notice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .notice-card {
+      padding: 22px;
+    }
+
+    .notice-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .support-panel {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 28px;
+      align-items: center;
+      padding: clamp(28px, 5vw, 50px);
+      background:
+        linear-gradient(120deg, color-mix(in srgb, var(--accent-2) 15%, transparent), transparent 40%),
+        linear-gradient(300deg, color-mix(in srgb, var(--accent) 20%, transparent), transparent 42%),
+        color-mix(in srgb, var(--surface-strong) 92%, transparent);
+    }
+
+    .support-panel h2 {
+      margin: 0;
+      font-size: clamp(30px, 4.8vw, 52px);
+      line-height: 1.06;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 52px;
+      padding: 0 20px;
+      border-radius: var(--radius);
+      background: var(--text);
+      color: var(--bg);
+      font-size: 15px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    footer {
+      width: min(100% - 40px, var(--max));
+      margin: 0 auto;
+      padding: 26px 0 38px;
+      border-top: 1px solid var(--line);
+      color: var(--soft);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1020px) {
+      .nav-inner {
+        flex-wrap: wrap;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero,
+      .platform-body,
+      .support-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .nav-inner,
+      .section,
+      footer {
+        width: min(100% - 28px, var(--max));
+      }
+
+      .brand span {
+        max-width: 132px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .nav-actions {
+        margin-left: auto;
+        gap: 8px;
+      }
+
+      .segmented {
+        min-width: 96px;
+      }
+
+      .icon-button {
+        width: 38px;
+        height: 38px;
+      }
+
+      .section {
+        padding: 62px 0;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .hero h1 {
+        font-size: clamp(38px, 11vw, 46px);
+        line-height: 1.08;
+      }
+
+      .overview-grid,
+      .notice-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .platform-head {
+        grid-template-columns: 1fr;
+      }
+
+      pre code {
+        min-width: 520px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html" aria-label="Game Shield SDK home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3 5 6v5c0 4.7 2.8 8 7 10 4.2-2 7-5.3 7-10V6l-7-3Z" />
+            <path d="M9 12.2 11 14l4-4.4" />
+          </svg>
+        </span>
+        <span data-i18n="brand">游戏盾 SDK</span>
+      </a>
+      <nav class="nav-links" aria-label="Documentation navigation">
+        <a href="index.html" data-i18n="navHome">首页</a>
+        <a href="#native" data-i18n="navNative">原生平台</a>
+        <a href="#engines" data-i18n="navEngines">游戏引擎</a>
+        <a href="#cross" data-i18n="navCross">跨端框架</a>
+        <a href="#notes" data-i18n="navNotes">注意事项</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="segmented" aria-label="Language switcher">
+          <button class="active" type="button" data-lang="zh">中</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <button class="icon-button" type="button" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section hero">
+      <div>
+        <a class="breadcrumb" href="index.html"><span data-i18n="crumbHome">游戏盾 SDK</span> / <b data-i18n="crumbDocs">接入说明</b></a>
+        <h1 data-i18n="heroTitle">接入说明<br><span class="gradient-text">多平台 SDK<br>集成指南</span></h1>
+        <p data-i18n="heroLead">基于正式版本 v3 接入文档整理，覆盖原生平台、Unity、Cocos Creator、Flutter 与 UniApp。开发者只需完成 SDK 初始化、获取本地端口、通过 127.0.0.1 转发访问真实后端，并在退出时释放资源。</p>
+        <div class="quick-nav">
+          <a class="tag" href="#ios">iOS</a>
+          <a class="tag" href="#macos">macOS</a>
+          <a class="tag" href="#android">Android</a>
+          <a class="tag" href="#windows">Windows</a>
+          <a class="tag" href="#unity">Unity</a>
+          <a class="tag" href="#cocos">Cocos Creator</a>
+          <a class="tag" href="#flutter">Flutter</a>
+          <a class="tag" href="#uniapp">UniApp</a>
+        </div>
+      </div>
+      <aside class="doc-panel">
+        <h2 data-i18n="docPanelTitle">接入核心模型</h2>
+        <p data-i18n="docPanelText">启动防护服务后，根据规则名获取本地端口，业务请求改为访问本机地址，由 SDK 安全隧道转发至真实后端服务。</p>
+        <div class="meta-grid">
+          <div class="meta-row"><b data-i18n="metaStart">启动</b><span>startService(pid, key)</span></div>
+          <div class="meta-row"><b data-i18n="metaPort">端口</b><span>getLocalhostPort(rule)</span></div>
+          <div class="meta-row"><b data-i18n="metaAccess">访问</b><span>http://127.0.0.1:{port}</span></div>
+          <div class="meta-row"><b data-i18n="metaStop">释放</b><span>stopService()</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="overviewEyebrow">Integration Flow</span>
+        <h2 data-i18n="overviewTitle">四步完成基础接入</h2>
+        <p data-i18n="overviewLead">不同平台的工程配置不同，但运行时调用模型保持一致，方便统一业务改造和排查。</p>
+      </div>
+      <div class="overview-grid">
+        <article class="overview-card">
+          <strong data-i18n="stepOneTitle">1. 引入 SDK</strong>
+          <p data-i18n="stepOneText">将 framework、dylib、aar、dll、unitypackage 或插件目录加入项目。</p>
+        </article>
+        <article class="overview-card">
+          <strong data-i18n="stepTwoTitle">2. 启动服务</strong>
+          <p data-i18n="stepTwoText">传入项目 ID 与授权密钥，依据回调或返回值判断初始化结果。</p>
+        </article>
+        <article class="overview-card">
+          <strong data-i18n="stepThreeTitle">3. 获取端口</strong>
+          <p data-i18n="stepThreeText">通过规则名获取 localhost 端口，并将业务请求改为本地访问。</p>
+        </article>
+        <article class="overview-card">
+          <strong data-i18n="stepFourTitle">4. 退出释放</strong>
+          <p data-i18n="stepFourText">应用退出前调用停止方法，释放防护服务占用的资源。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="native">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="nativeEyebrow">Native Platforms</span>
+        <h2 data-i18n="nativeTitle">原生平台接入</h2>
+        <p data-i18n="nativeLead">覆盖 iOS、macOS、Android 与 Windows，适合原生客户端或需要直接绑定底层库的项目。</p>
+      </div>
+      <div class="platform-stack">
+        <article class="platform-card" id="ios">
+          <div class="platform-head">
+            <div class="platform-index">01</div>
+            <div>
+              <h3>iOS</h3>
+              <p data-i18n="iosIntro">添加 netshield.framework，配置 framework 搜索路径和 header 搜索路径，头文件为 LibNetshield.h。</p>
+            </div>
+          </div>
+          <div class="platform-body">
+            <div class="subblock">
+              <h4 data-i18n="configTitle">工程配置</h4>
+              <ul class="clean-list">
+                <li data-i18n="iosConfigOne">添加 netshield.framework 文件。</li>
+                <li data-i18n="iosConfigTwo">framework 搜索路径指向 framework 所在目录。</li>
+                <li data-i18n="iosConfigThree">header 搜索路径使用 netshield.framework 全路径并追加 /Headers。</li>
+              </ul>
+            </div>
+            <pre><code>#import &lt;LibNetshield.h&gt;
+
+[LibNetshield startService:@"123"
+                       key:@"12345678901234567890"
+         completionHandler:^(BOOL success, NSString *errMessage, NSString *clientIP) {
+  if (success) {
+    NSLog(@"SDK start success,clientIP:%@", clientIP);
+  } else {
+    NSLog(@"SDK start failed, errMessage:%@", errMessage);
+  }
+}];
+
+int localPort = [LibNetshield getLocalhostPort:@"test;10001"];
+NSString *url = [NSString stringWithFormat:@"http://127.0.0.1:%d", localPort];
+
+[LibNetshield stopService];</code></pre>
+          </div>
+        </article>
+
+        <article class="platform-card" id="macos">
+          <div class="platform-head">
+            <div class="platform-index">02</div>
+            <div>
+              <h3>macOS</h3>
+              <p data-i18n="macIntro">添加 libnetshield.dylib 并设置链接搜索路径。C++ 与 Objective-C 混编时需将 .m 后缀改为 .mm。</p>
+            </div>
+          </div>
+          <div class="platform-body">
+            <div class="subblock">
+              <h4 data-i18n="apiTitle">接口</h4>
+              <ul class="clean-list">
+                <li>startNetshieldService(pid, key, completionHandler)</li>
+                <li>getLocalhostPort(rule)</li>
+                <li>stopNetshieldService()</li>
+              </ul>
+            </div>
+            <pre><code>extern void startNetshieldService(const char *, const char *, void (*)(int, const char *, const char *));
+extern int getLocalhostPort(const char *);
+extern void stopNetshieldService();
+
+startNetshieldService("123", "12345678901234567890",
+  [](int startResult, const char *errMessage, const char *clientIP) {
+    if (startResult == 0) {
+      NSLog(@"SDK started success,clientIP:%s", clientIP);
+    } else {
+      NSLog(@"SDK started failed, errMsg:%s", errMessage);
+    }
+  });
+
+int localhostPort = getLocalhostPort("240.0.0.2;80");
+NSString *localhostUrl = [NSString stringWithFormat:@"http://127.0.0.1:%d", localhostPort];
+
+stopNetshieldService();</code></pre>
+          </div>
+        </article>
+
+        <article class="platform-card" id="android">
+          <div class="platform-head">
+            <div class="platform-index">03</div>
+            <div>
+              <h3>Android</h3>
+              <p data-i18n="androidIntro">在 app/build.gradle 添加 aar 路径，并将 minSdkVersion 调整为 21 或以上。类文件为 com.netshield.Netshield。</p>
+            </div>
+          </div>
+          <div class="platform-body">
+            <div class="subblock">
+              <h4 data-i18n="apiTitle2">接口</h4>
+              <ul class="clean-list">
+                <li>Netshield.startService(pid, key)</li>
+                <li>Netshield.getClientIP()</li>
+                <li>Netshield.getErrMessage()</li>
+                <li>Netshield.getLocalhostPort(rule)</li>
+                <li>Netshield.stopService()</li>
+              </ul>
+            </div>
+            <pre><code>int startResult = Netshield.startService("123", "12345678901234567890");
+if (startResult == 0) {
+  String clientIP = Netshield.getClientIP();
+  Log.d("SDK", "SDK start success,clientIP:" + clientIP);
+} else {
+  String errMessage = Netshield.getErrMessage();
+  Log.e("SDK", "SDK start failed,errMessage:" + errMessage);
+}
+
+int localPort = Netshield.getLocalhostPort("test;10001");
+String url = String.format("http://127.0.0.1:%d", localPort);
+
+Netshield.stopService();</code></pre>
+          </div>
+        </article>
+
+        <article class="platform-card" id="windows">
+          <div class="platform-head">
+            <div class="platform-index">04</div>
+            <div>
+              <h3>Windows</h3>
+              <p data-i18n="windowsIntro">将 netshield.dll 放置到 exe 同级目录，可动态加载 DLL 并获取 start、port、stop 等函数地址。</p>
+            </div>
+          </div>
+          <div class="platform-body">
+            <div class="subblock">
+              <h4 data-i18n="windowsConfigTitle">部署重点</h4>
+              <ul class="clean-list">
+                <li data-i18n="windowsConfigOne">netshield.dll 必须随 exe 正确发布。</li>
+                <li data-i18n="windowsConfigTwo">启动成功返回 0，失败返回 -1。</li>
+                <li data-i18n="windowsConfigThree">如果进程无法退出，在 main 函数结束前调用 stopNetshieldService。</li>
+              </ul>
+            </div>
+            <pre><code>HMODULE netshieldDll = LoadLibrary(L"netshield.dll");
+auto startNetshieldService =
+  reinterpret_cast&lt;int(__cdecl *)(const char *, const char *)&gt;(
+    GetProcAddress(netshieldDll, "startNetshieldService"));
+auto getLocalhostPort =
+  reinterpret_cast&lt;int(__cdecl *)(const char *)&gt;(
+    GetProcAddress(netshieldDll, "getLocalhostPort"));
+auto stopNetshieldService =
+  reinterpret_cast&lt;void(__cdecl *)()&gt;(
+    GetProcAddress(netshieldDll, "stopNetshieldService"));
+
+int startResult = startNetshieldService("123", "12345678901234567890");
+int localPort = getLocalhostPort("test;10001");
+
+char url[1024];
+snprintf(url, sizeof(url), "http://127.0.0.1:%d", localPort);
+
+stopNetshieldService();</code></pre>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="engines">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="engineEyebrow">Game Engines</span>
+        <h2 data-i18n="engineTitle">Unity 与 Cocos Creator 接入</h2>
+        <p data-i18n="engineLead">面向游戏项目，可通过插件包、桥接文件与平台库完成跨平台防护能力接入。</p>
+      </div>
+      <div class="platform-stack">
+        <article class="platform-card" id="unity">
+          <div class="platform-head">
+            <div class="platform-index">05</div>
+            <div>
+              <h3>Unity</h3>
+              <p data-i18n="unityIntro">Unity 支持 unitypackage 或 NetshieldPlugins 插件包两种方式，推荐使用 unitypackage。</p>
+            </div>
+          </div>
+          <div class="platform-body">
+            <div class="subblock">
+              <h4 data-i18n="configTitle2">工程配置</h4>
+              <ul class="clean-list">
+                <li data-i18n="unityConfigOne">拖动 Netshield.unitypackage 到 Unity 中。</li>
+                <li data-i18n="unityConfigTwo">或将 NetshieldPlugins 放到 Assets 目录下。</li>
+                <li data-i18n="unityConfigThree">iOS framework 需设置为 Embedded Binaries。</li>
+              </ul>
+            </div>
+            <pre><code>Netshield4Unity.GetInstance().StartService(
+  "123",
+  "12345678901234567890",
+  (startResult, errMessage, clientIP) =&gt; {
+    if (startResult == 0) {
+      Debug.Log($"SDK start success,clientIP:{clientIP}");
+    } else {
+      Debug.LogError($"SDK start failed, errMessage:{errMessage}");
+    }
+  });
+
+int localPort =
+  Netshield.Netshield4Unity.GetInstance().GetLocalhostPort("test;10001");
+var url = "http://127.0.0.1:" + localPort;
+
+Netshield4Unity.GetInstance().StopService();</code></pre>
+          </div>
+        </article>
+
+        <article class="platform-card" id="cocos">
+          <div class="platform-head">
+            <div class="platform-index">06</div>
+            <div>
+              <h3>Cocos Creator</h3>
+              <p data-i18n="cocosIntro">拷贝 Netshield.js 到脚本目录，并按 Android、iOS/macOS、Windows 对应放置 aar、framework、dylib、dll 与桥接文件。</p>
+            </div>
+          </div>
+          <div class="platform-body">
+            <div class="subblock">
+              <h4 data-i18n="cocosStructureTitle">库结构</h4>
+              <ul class="clean-list">
+                <li>netshield/android/netshield-release.aar</li>
+                <li>netshield/ios_mac/ios/netshield.framework</li>
+                <li>netshield/ios_mac/mac/libnetshield.dylib</li>
+                <li>netshield/windows/netshield.dll</li>
+              </ul>
+            </div>
+            <pre><code>async onStartSDK() {
+  const startResult = await Netshield.start("123", "1231231231231231231231");
+  if (startResult.startResult === 0) {
+    console.log("SDK start success,clientIP:" + startResult.clientIP);
+  } else {
+    this.appendLog("SDK start failed, errMessage:" + startResult.errMessage);
+  }
+}
+
+onRequestPage() {
+  const localhostPort = Netshield.getLocalhostPort("240.0.0.2;80");
+  let url = "http://127.0.0.1:" + localhostPort;
+  console.log("访问页面: " + url);
+}
+
+onStopSDK() {
+  Netshield.stop();
+}</code></pre>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="cross">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="crossEyebrow">Cross-Platform Frameworks</span>
+        <h2 data-i18n="crossTitle">Flutter 与 UniApp 接入</h2>
+        <p data-i18n="crossLead">跨端框架通过插件方式接入，业务层仍遵循启动服务、获取端口、本地访问、退出释放的统一模型。</p>
+      </div>
+      <div class="platform-stack">
+        <article class="platform-card" id="flutter">
+          <div class="platform-head">
+            <div class="platform-index">07</div>
+            <div>
+              <h3>Flutter</h3>
+              <p data-i18n="flutterIntro">SDK 以 Flutter plugin 形式提供。Windows 11 需要打开开发者模式，以允许 Flutter 插件的 symlink 特性。</p>
+            </div>
+          </div>
+          <div class="platform-body">
+            <div class="subblock">
+              <h4 data-i18n="flutterDependencyTitle">添加依赖</h4>
+              <pre><code>dependencies:
+  netshield4flutter:
+    path: ../path/to/your/netshield4flutter</code></pre>
+            </div>
+            <pre><code>import 'package:netshield4flutter/netshield4flutter.dart';
+
+final _netshield4flutterPlugin = Netshield4flutter();
+
+final startResult = await _netshield4flutterPlugin.startService(
+  '123',
+  '1231231231231231231231',
+);
+
+if (startResult.isSuccess) {
+  _addLog('SDK start success,clientIP:${startResult.clientIP}');
+} else {
+  _addLog('SDK start failed, errMessage:${startResult.errMessage}');
+}
+
+final localhostPort =
+  await _netshield4flutterPlugin.getLocalhostPort("240.0.0.2;80");
+String url = "http://127.0.0.1:$localhostPort";
+
+await _netshield4flutterPlugin.stopService();</code></pre>
+          </div>
+        </article>
+
+        <article class="platform-card" id="uniapp">
+          <div class="platform-head">
+            <div class="platform-index">08</div>
+            <div>
+              <h3>UniApp</h3>
+              <p data-i18n="uniappIntro">支持 uts 插件与原生插件两种方式。uts 插件放到 uni_modules，原生插件放到 nativeplugins 并在 manifest.json 中启用。</p>
+            </div>
+          </div>
+          <div class="platform-body">
+            <div class="subblock">
+              <h4 data-i18n="uniappModeTitle">插件方式</h4>
+              <ul class="clean-list">
+                <li data-i18n="uniappModeOne">uts 插件：从 @/uni_modules/dev-netshield 引入方法。</li>
+                <li data-i18n="uniappModeTwo">原生插件：通过 uni.requireNativePlugin('netshieldNativePlugin') 调用。</li>
+              </ul>
+            </div>
+            <pre><code>import {
+  startNetshieldService,
+  stopNetshieldService,
+  getLocalhostPort
+} from "@/uni_modules/dev-netshield";
+
+startNetshieldService("123", "1231231231231231231231",
+  (startResult: Array&lt;string&gt;) =&gt; {
+    if ("0" == startResult[0]) {
+      this.addLog("SDK start success,clientIP:" + startResult[2]);
+    } else {
+      this.addLog("SDK start failed, errMessage:" + startResult[1]);
+    }
+  });
+
+const localhostPort = getLocalhostPort("240.0.0.2;80");
+let url = "http://127.0.0.1:" + localhostPort;
+
+stopNetshieldService();</code></pre>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="notes">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="notesEyebrow">Checklist</span>
+        <h2 data-i18n="notesTitle">上线前注意事项</h2>
+        <p data-i18n="notesLead">以下内容来自正式接入文档的注意事项部分，建议在联调和发布前逐项确认。</p>
+      </div>
+      <div class="notice-grid">
+        <article class="notice-card">
+          <strong data-i18n="noteOneTitle">初始化时机</strong>
+          <p data-i18n="noteOneText">应用启动后尽早调用初始化方法，避免业务请求先于防护服务建立。</p>
+        </article>
+        <article class="notice-card">
+          <strong data-i18n="noteTwoTitle">错误处理</strong>
+          <p data-i18n="noteTwoText">iOS/macOS 通过 completionHandler 判断结果，其他平台通过返回值判断，0 表示成功。</p>
+        </article>
+        <article class="notice-card">
+          <strong data-i18n="noteThreeTitle">资源释放</strong>
+          <p data-i18n="noteThreeText">应用退出时调用 stopNetshieldService 或对应 stop 方法，释放 SDK 资源。</p>
+        </article>
+        <article class="notice-card">
+          <strong data-i18n="noteFourTitle">动态库依赖</strong>
+          <p data-i18n="noteFourText">Windows 需正确部署 netshield.dll；iOS/macOS 的 framework 必须配置为 Embed 模式，否则可能运行时崩溃。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="support-panel">
+        <div>
+          <h2 data-i18n="supportTitle">接入联调或技术支持</h2>
+          <p data-i18n="supportText">如需获取 SDK 包、项目 ID、授权密钥、规则名配置或私有化部署协助，请联系技术支持。</p>
+        </div>
+        <a class="button" href="https://t.me/youxidun" target="_blank" rel="noreferrer">@youxidun</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span data-i18n="footerText">游戏盾 SDK 接入说明 · 基于正式版本 v3 整理</span>
+  </footer>
+
+  <script>
+    const copy = {
+      zh: {
+        brand: "游戏盾 SDK",
+        navHome: "首页",
+        navNative: "原生平台",
+        navEngines: "游戏引擎",
+        navCross: "跨端框架",
+        navNotes: "注意事项",
+        crumbHome: "游戏盾 SDK",
+        crumbDocs: "接入说明",
+        heroTitle: "接入说明<br><span class=\"gradient-text\">多平台 SDK<br>集成指南</span>",
+        heroLead: "基于正式版本 v3 接入文档整理，覆盖原生平台、Unity、Cocos Creator、Flutter 与 UniApp。开发者只需完成 SDK 初始化、获取本地端口、通过 127.0.0.1 转发访问真实后端，并在退出时释放资源。",
+        docPanelTitle: "接入核心模型",
+        docPanelText: "启动防护服务后，根据规则名获取本地端口，业务请求改为访问本机地址，由 SDK 安全隧道转发至真实后端服务。",
+        metaStart: "启动",
+        metaPort: "端口",
+        metaAccess: "访问",
+        metaStop: "释放",
+        overviewEyebrow: "Integration Flow",
+        overviewTitle: "四步完成基础接入",
+        overviewLead: "不同平台的工程配置不同，但运行时调用模型保持一致，方便统一业务改造和排查。",
+        stepOneTitle: "1. 引入 SDK",
+        stepOneText: "将 framework、dylib、aar、dll、unitypackage 或插件目录加入项目。",
+        stepTwoTitle: "2. 启动服务",
+        stepTwoText: "传入项目 ID 与授权密钥，依据回调或返回值判断初始化结果。",
+        stepThreeTitle: "3. 获取端口",
+        stepThreeText: "通过规则名获取 localhost 端口，并将业务请求改为本地访问。",
+        stepFourTitle: "4. 退出释放",
+        stepFourText: "应用退出前调用停止方法，释放防护服务占用的资源。",
+        nativeEyebrow: "Native Platforms",
+        nativeTitle: "原生平台接入",
+        nativeLead: "覆盖 iOS、macOS、Android 与 Windows，适合原生客户端或需要直接绑定底层库的项目。",
+        configTitle: "工程配置",
+        apiTitle: "接口",
+        apiTitle2: "接口",
+        iosIntro: "添加 netshield.framework，配置 framework 搜索路径和 header 搜索路径，头文件为 LibNetshield.h。",
+        iosConfigOne: "添加 netshield.framework 文件。",
+        iosConfigTwo: "framework 搜索路径指向 framework 所在目录。",
+        iosConfigThree: "header 搜索路径使用 netshield.framework 全路径并追加 /Headers。",
+        macIntro: "添加 libnetshield.dylib 并设置链接搜索路径。C++ 与 Objective-C 混编时需将 .m 后缀改为 .mm。",
+        androidIntro: "在 app/build.gradle 添加 aar 路径，并将 minSdkVersion 调整为 21 或以上。类文件为 com.netshield.Netshield。",
+        windowsIntro: "将 netshield.dll 放置到 exe 同级目录，可动态加载 DLL 并获取 start、port、stop 等函数地址。",
+        windowsConfigTitle: "部署重点",
+        windowsConfigOne: "netshield.dll 必须随 exe 正确发布。",
+        windowsConfigTwo: "启动成功返回 0，失败返回 -1。",
+        windowsConfigThree: "如果进程无法退出，在 main 函数结束前调用 stopNetshieldService。",
+        engineEyebrow: "Game Engines",
+        engineTitle: "Unity 与 Cocos Creator 接入",
+        engineLead: "面向游戏项目，可通过插件包、桥接文件与平台库完成跨平台防护能力接入。",
+        configTitle2: "工程配置",
+        unityIntro: "Unity 支持 unitypackage 或 NetshieldPlugins 插件包两种方式，推荐使用 unitypackage。",
+        unityConfigOne: "拖动 Netshield.unitypackage 到 Unity 中。",
+        unityConfigTwo: "或将 NetshieldPlugins 放到 Assets 目录下。",
+        unityConfigThree: "iOS framework 需设置为 Embedded Binaries。",
+        cocosIntro: "拷贝 Netshield.js 到脚本目录，并按 Android、iOS/macOS、Windows 对应放置 aar、framework、dylib、dll 与桥接文件。",
+        cocosStructureTitle: "库结构",
+        crossEyebrow: "Cross-Platform Frameworks",
+        crossTitle: "Flutter 与 UniApp 接入",
+        crossLead: "跨端框架通过插件方式接入，业务层仍遵循启动服务、获取端口、本地访问、退出释放的统一模型。",
+        flutterIntro: "SDK 以 Flutter plugin 形式提供。Windows 11 需要打开开发者模式，以允许 Flutter 插件的 symlink 特性。",
+        flutterDependencyTitle: "添加依赖",
+        uniappIntro: "支持 uts 插件与原生插件两种方式。uts 插件放到 uni_modules，原生插件放到 nativeplugins 并在 manifest.json 中启用。",
+        uniappModeTitle: "插件方式",
+        uniappModeOne: "uts 插件：从 @/uni_modules/dev-netshield 引入方法。",
+        uniappModeTwo: "原生插件：通过 uni.requireNativePlugin('netshieldNativePlugin') 调用。",
+        notesEyebrow: "Checklist",
+        notesTitle: "上线前注意事项",
+        notesLead: "以下内容来自正式接入文档的注意事项部分，建议在联调和发布前逐项确认。",
+        noteOneTitle: "初始化时机",
+        noteOneText: "应用启动后尽早调用初始化方法，避免业务请求先于防护服务建立。",
+        noteTwoTitle: "错误处理",
+        noteTwoText: "iOS/macOS 通过 completionHandler 判断结果，其他平台通过返回值判断，0 表示成功。",
+        noteThreeTitle: "资源释放",
+        noteThreeText: "应用退出时调用 stopNetshieldService 或对应 stop 方法，释放 SDK 资源。",
+        noteFourTitle: "动态库依赖",
+        noteFourText: "Windows 需正确部署 netshield.dll；iOS/macOS 的 framework 必须配置为 Embed 模式，否则可能运行时崩溃。",
+        supportTitle: "接入联调或技术支持",
+        supportText: "如需获取 SDK 包、项目 ID、授权密钥、规则名配置或私有化部署协助，请联系技术支持。",
+        footerText: "游戏盾 SDK 接入说明 · 基于正式版本 v3 整理"
+      },
+      en: {
+        brand: "Game Shield SDK",
+        navHome: "Home",
+        navNative: "Native",
+        navEngines: "Engines",
+        navCross: "Cross-Platform",
+        navNotes: "Checklist",
+        crumbHome: "Game Shield SDK",
+        crumbDocs: "Integration Guide",
+        heroTitle: "Integration Guide<br><span class=\"gradient-text\">Multi-Platform SDK Setup</span>",
+        heroLead: "Based on the official v3 integration document, this guide covers native platforms, Unity, Cocos Creator, Flutter, and UniApp. The runtime flow is simple: initialize the SDK, obtain a local port, access the real backend through 127.0.0.1, and release resources on exit.",
+        docPanelTitle: "Core Integration Model",
+        docPanelText: "After the defense service starts, get a local port by rule name. Business requests are changed to localhost and forwarded to the real backend through the SDK secure tunnel.",
+        metaStart: "Start",
+        metaPort: "Port",
+        metaAccess: "Access",
+        metaStop: "Stop",
+        overviewEyebrow: "Integration Flow",
+        overviewTitle: "Complete the basic integration in four steps",
+        overviewLead: "Project configuration varies by platform, while the runtime calling model stays consistent for easier business changes and troubleshooting.",
+        stepOneTitle: "1. Add SDK",
+        stepOneText: "Add the framework, dylib, aar, dll, unitypackage, or plugin directory to the project.",
+        stepTwoTitle: "2. Start Service",
+        stepTwoText: "Pass the project ID and license key, then check the callback or return value.",
+        stepThreeTitle: "3. Get Port",
+        stepThreeText: "Get the localhost port by rule name and route business requests through it.",
+        stepFourTitle: "4. Release",
+        stepFourText: "Call the stop method before app exit to release resources used by the defense service.",
+        nativeEyebrow: "Native Platforms",
+        nativeTitle: "Native platform integration",
+        nativeLead: "Covers iOS, macOS, Android, and Windows for native clients or projects that bind directly to platform libraries.",
+        configTitle: "Configuration",
+        apiTitle: "APIs",
+        apiTitle2: "APIs",
+        iosIntro: "Add netshield.framework, configure framework and header search paths, and include LibNetshield.h.",
+        iosConfigOne: "Add the netshield.framework file.",
+        iosConfigTwo: "Set the framework search path to the directory containing the framework.",
+        iosConfigThree: "Set the header search path to the full netshield.framework path plus /Headers.",
+        macIntro: "Add libnetshield.dylib and configure the link search path. For C++ and Objective-C mixed code, rename .m files to .mm.",
+        androidIntro: "Add the aar path in app/build.gradle and set minSdkVersion to 21 or above. The class is com.netshield.Netshield.",
+        windowsIntro: "Place netshield.dll next to the exe. You can dynamically load the DLL and resolve start, port, and stop function addresses.",
+        windowsConfigTitle: "Deployment Notes",
+        windowsConfigOne: "netshield.dll must be shipped correctly with the exe.",
+        windowsConfigTwo: "Start returns 0 on success and -1 on failure.",
+        windowsConfigThree: "If the process cannot exit, call stopNetshieldService before main ends.",
+        engineEyebrow: "Game Engines",
+        engineTitle: "Unity and Cocos Creator integration",
+        engineLead: "For game projects, plugins, bridge files, and platform libraries provide cross-platform defense integration.",
+        configTitle2: "Configuration",
+        unityIntro: "Unity supports either a unitypackage or the NetshieldPlugins package. The unitypackage path is recommended.",
+        unityConfigOne: "Drag Netshield.unitypackage into Unity.",
+        unityConfigTwo: "Or place NetshieldPlugins under the Assets directory.",
+        unityConfigThree: "The iOS framework must be set as Embedded Binaries.",
+        cocosIntro: "Copy Netshield.js into the script directory, then place aar, framework, dylib, dll, and bridge files for Android, iOS/macOS, and Windows.",
+        cocosStructureTitle: "Library Structure",
+        crossEyebrow: "Cross-Platform Frameworks",
+        crossTitle: "Flutter and UniApp integration",
+        crossLead: "Cross-platform frameworks integrate through plugins while keeping the same runtime model: start, get port, access localhost, and release.",
+        flutterIntro: "The SDK is provided as a Flutter plugin. On Windows 11, enable Developer Mode to allow Flutter plugin symlinks.",
+        flutterDependencyTitle: "Dependency",
+        uniappIntro: "Supports both uts and native plugins. Place uts plugins under uni_modules, or native plugins under nativeplugins and enable them in manifest.json.",
+        uniappModeTitle: "Plugin Modes",
+        uniappModeOne: "uts plugin: import methods from @/uni_modules/dev-netshield.",
+        uniappModeTwo: "Native plugin: call uni.requireNativePlugin('netshieldNativePlugin').",
+        notesEyebrow: "Checklist",
+        notesTitle: "Pre-launch checklist",
+        notesLead: "These notes come from the official integration document and should be checked before joint debugging and release.",
+        noteOneTitle: "Initialization Timing",
+        noteOneText: "Call initialization as early as possible after app startup, before business requests are sent.",
+        noteTwoTitle: "Error Handling",
+        noteTwoText: "iOS/macOS use completionHandler for results. Other platforms use return values, where 0 means success.",
+        noteThreeTitle: "Resource Release",
+        noteThreeText: "Call stopNetshieldService or the platform-specific stop method when the app exits.",
+        noteFourTitle: "Dynamic Library Dependencies",
+        noteFourText: "Windows must deploy netshield.dll correctly. iOS/macOS frameworks must be embedded, or runtime crashes may occur.",
+        supportTitle: "Integration support",
+        supportText: "For SDK packages, project IDs, license keys, rule configuration, or private deployment assistance, contact technical support.",
+        footerText: "Game Shield SDK Integration Guide · Based on official v3 documentation"
+      }
+    };
+
+    const root = document.documentElement;
+    const langButtons = document.querySelectorAll("[data-lang]");
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+
+    function setLanguage(lang) {
+      const dictionary = copy[lang];
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      document.querySelectorAll("[data-i18n]").forEach((node) => {
+        const key = node.getAttribute("data-i18n");
+        if (dictionary[key]) {
+          node.innerHTML = dictionary[key];
+        }
+      });
+      langButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === lang);
+      });
+      localStorage.setItem("gameShieldLang", lang);
+    }
+
+    function renderThemeIcon(theme) {
+      themeIcon.innerHTML = theme === "dark"
+        ? '<path d="M12 3v2" /><path d="M12 19v2" /><path d="m4.22 4.22 1.42 1.42" /><path d="m18.36 18.36 1.42 1.42" /><path d="M3 12h2" /><path d="M19 12h2" /><path d="m4.22 19.78 1.42-1.42" /><path d="m18.36 5.64 1.42-1.42" /><circle cx="12" cy="12" r="4" />'
+        : '<path d="M12 3a6 6 0 0 0 9 7.2A8 8 0 1 1 12 3Z" />';
+    }
+
+    function setTheme(theme) {
+      root.dataset.theme = theme;
+      localStorage.setItem("gameShieldTheme", theme);
+      renderThemeIcon(theme);
+    }
+
+    langButtons.forEach((button) => {
+      button.addEventListener("click", () => setLanguage(button.dataset.lang));
+    });
+
+    themeToggle.addEventListener("click", () => {
+      setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+    });
+
+    setLanguage(localStorage.getItem("gameShieldLang") || "zh");
+    setTheme(localStorage.getItem("gameShieldTheme") || "dark");
+  </script>
+</body>
+</html>

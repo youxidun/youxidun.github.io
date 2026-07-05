@@ -1,745 +1,1402 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI盾 - 专注于游戏、金融、直播等行业网络安全防护产品</title>
-    <meta name="description" content="SDK游戏盾提供无上限DDoS/CC攻击防护、智能加速和加密隧道通信，适用于游戏、社交直播、金融等行业应用安全防护。">
-    <meta name="keywords" content="SDK游戏盾,DDoS防护,CC攻击防御,网络安全,防封锁,防屏蔽,加密隧道">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #10b981;
-            --secondary-color: #059669;
-            --accent-color: #34d399;
-            --dark-bg: #0f172a;
-            --light-bg: #f8fafc;
-            --card-dark: #1e293b;
-            --card-light: #ffffff;
-            --text-dark: #f1f5f9;
-            --text-light: #334155;
-            --text-secondary-dark: #94a3b8;
-            --text-secondary-light: #64748b;
-            --border-dark: #334155;
-            --border-light: #e2e8f0;
-            --shadow-light: 0 10px 25px rgba(0, 0, 0, 0.05);
-            --shadow-dark: 0 10px 25px rgba(0, 0, 0, 0.2);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>云层-游戏盾 SDK | AI DDoS Defense</title>
+  <meta name="description" content="游戏盾 SDK 是面向 APP 与在线游戏的 AI DDoS 防护产品，支持私有化部署、源码维护、流量加密、防DNS劫持、防封锁拦截与多端 SDK 集成。" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b13;
+      --bg-2: #0d1420;
+      --surface: rgba(15, 24, 38, 0.78);
+      --surface-strong: rgba(20, 31, 48, 0.92);
+      --text: #eef7ff;
+      --muted: #9bb1c9;
+      --soft: #607288;
+      --line: rgba(155, 177, 201, 0.18);
+      --accent: #2ee6a6;
+      --accent-2: #43a8ff;
+      --accent-3: #ffcf5b;
+      --danger: #ff6b86;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+      --radius: 8px;
+      --max: 1180px;
+      --grid: rgba(67, 168, 255, 0.11);
+      --hero-glow: rgba(46, 230, 166, 0.22);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f8fc;
+      --bg-2: #ffffff;
+      --surface: rgba(255, 255, 255, 0.78);
+      --surface-strong: rgba(255, 255, 255, 0.94);
+      --text: #0c1726;
+      --muted: #52657b;
+      --soft: #7e8da0;
+      --line: rgba(18, 35, 58, 0.12);
+      --accent: #00a979;
+      --accent-2: #0d78d8;
+      --accent-3: #c27a00;
+      --danger: #d72f55;
+      --shadow: 0 24px 70px rgba(30, 52, 84, 0.12);
+      --grid: rgba(13, 120, 216, 0.09);
+      --hero-glow: rgba(0, 169, 121, 0.16);
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            transition: var(--transition);
-            background-color: var(--light-bg);
-            color: var(--text-light);
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        body.dark-mode {
-            background-color: var(--dark-bg);
-            color: var(--text-dark);
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 82% 8%, var(--hero-glow), transparent 30rem),
+        radial-gradient(circle at 8% 18%, rgba(67, 168, 255, 0.16), transparent 28rem),
+        linear-gradient(180deg, var(--bg), var(--bg-2) 54%, var(--bg));
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
 
-        /* 导航栏 */
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
-        }
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      content: "";
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-        .dark-mode .navbar {
-            background: rgba(15, 23, 42, 0.95);
-        }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
+    .page-shell {
+      position: relative;
+      isolation: isolate;
+    }
 
-        .nav-link {
-            font-weight: 500;
-            color: var(--text-light);
-            transition: var(--transition);
-        }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(18px);
+    }
 
-        .dark-mode .nav-link {
-            color: var(--text-dark);
-        }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      width: min(100% - 40px, var(--max));
+      min-height: 74px;
+      margin: 0 auto;
+    }
 
-        .nav-link:hover {
-            color: var(--primary-color);
-        }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+      font-weight: 800;
+    }
 
-        /* 英雄区域 */
-        .hero {
-            padding: 160px 0 80px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            text-align: center;
-        }
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--accent) 44%, var(--line));
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 24%, transparent), color-mix(in srgb, var(--accent-2) 18%, transparent));
+      box-shadow: inset 0 0 22px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
 
-        .hero h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
+    .brand-mark svg {
+      width: 22px;
+      height: 22px;
+    }
 
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
 
-        .btn-primary {
-            background: white;
-            color: var(--primary-color);
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: var(--transition);
-        }
+    .nav-links a:hover {
+      color: var(--text);
+    }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
-        }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        /* 核心功能 */
-        .features {
-            padding: 80px 0;
-        }
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-width: 112px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-strong) 84%, transparent);
+    }
 
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 3rem;
-        }
+    .segmented button,
+    .icon-button {
+      border: 0;
+      border-radius: 6px;
+      color: var(--muted);
+      background: transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 750;
+      cursor: pointer;
+    }
 
-        .feature-card {
-            background: var(--card-light);
-            border-radius: 12px;
-            padding: 2rem;
-            height: 100%;
-            transition: var(--transition);
-            border: 1px solid var(--border-light);
-            text-align: center;
-        }
+    .segmented button {
+      min-height: 30px;
+      padding: 0 10px;
+    }
 
-        .dark-mode .feature-card {
-            background: var(--card-dark);
-            border-color: var(--border-dark);
-        }
+    .segmented button.active {
+      color: var(--bg);
+      background: var(--accent);
+    }
 
-        .feature-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            color: white;
-            font-size: 1.8rem;
-        }
+    .icon-button {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-strong) 86%, transparent);
+    }
 
-        .feature-card h4 {
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
+    .icon-button:hover {
+      color: var(--text);
+      border-color: color-mix(in srgb, var(--accent-2) 52%, var(--line));
+    }
 
-        .feature-card p {
-            color: var(--text-secondary-light);
-            line-height: 1.6;
-        }
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+    }
 
-        .dark-mode .feature-card p {
-            color: var(--text-secondary-dark);
-        }
+    .section {
+      width: min(100% - 40px, var(--max));
+      margin: 0 auto;
+      padding: 92px 0;
+    }
 
-        /* 技术架构 */
-        .architecture {
-            padding: 80px 0;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.03), rgba(5, 150, 105, 0.03));
-        }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.86fr);
+      gap: 54px;
+      align-items: center;
+      min-height: calc(100svh - 74px);
+      padding-top: 54px;
+      padding-bottom: 64px;
+    }
 
-        .dark-mode .architecture {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.08));
-        }
+    .hero-copy {
+      max-width: 720px;
+    }
 
-        .arch-step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-            background: var(--card-light);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: var(--transition);
-        }
+    .hero h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(38px, 5.8vw, 72px);
+      line-height: 1.04;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
 
-        .dark-mode .arch-step {
-            background: var(--card-dark);
-        }
+    .gradient-text {
+      background: linear-gradient(100deg, var(--text), var(--accent) 48%, var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
 
-        .step-number {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            margin-right: 1.5rem;
-            flex-shrink: 0;
-        }
+    .hero-lede {
+      max-width: 680px;
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.8;
+    }
 
-        .step-content h4 {
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 34px;
+    }
 
-        .step-content p {
-            color: var(--text-secondary-light);
-            margin: 0;
-        }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 48px;
+      padding: 0 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 800;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
 
-        .dark-mode .step-content p {
-            color: var(--text-secondary-dark);
-        }
+    .button:hover {
+      transform: translateY(-2px);
+    }
 
-        /* 应用场景 */
-        .use-cases {
-            padding: 80px 0;
-        }
+    .button.primary {
+      border-color: color-mix(in srgb, var(--accent) 62%, transparent);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #031017;
+      box-shadow: 0 18px 48px color-mix(in srgb, var(--accent) 24%, transparent);
+    }
 
-        .case-card {
-            background: var(--card-light);
-            border-radius: 12px;
-            padding: 2rem;
-            height: 100%;
-            transition: var(--transition);
-            border: 1px solid var(--border-light);
-        }
+    .button.secondary {
+      background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
+      color: var(--text);
+    }
 
-        .dark-mode .case-card {
-            background: var(--card-dark);
-            border-color: var(--border-dark);
-        }
+    .proof-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      max-width: 680px;
+      margin-top: 46px;
+    }
 
-        .case-icon {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
+    .proof-item {
+      min-height: 98px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 84%, transparent);
+    }
 
-        .case-card h4 {
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
+    .proof-item strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.1;
+    }
 
-        .case-card ul {
-            list-style: none;
-            padding: 0;
-        }
+    .proof-item span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-        .case-card li {
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary-light);
-        }
+    .hero-visual {
+      position: relative;
+      min-height: 520px;
+    }
 
-        .dark-mode .case-card li {
-            color: var(--text-secondary-dark);
-        }
+    .defense-orbit {
+      position: absolute;
+      inset: 4% 0 auto;
+      height: 500px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, color-mix(in srgb, var(--accent) 18%, transparent) 0 7%, transparent 8%),
+        radial-gradient(circle at center, transparent 0 34%, color-mix(in srgb, var(--accent-2) 12%, transparent) 35% 36%, transparent 37%),
+        radial-gradient(circle at center, transparent 0 54%, color-mix(in srgb, var(--accent) 14%, transparent) 55% 56%, transparent 57%);
+      box-shadow: inset 0 0 80px color-mix(in srgb, var(--accent-2) 12%, transparent);
+    }
 
-        .case-card li:before {
-            content: "✓";
-            color: var(--primary-color);
-            font-weight: bold;
-            margin-right: 0.5rem;
-        }
+    .core-card {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: min(78%, 390px);
+      transform: translate(-50%, -50%);
+      padding: 24px;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+      box-shadow: var(--shadow);
+    }
 
-        /* 页脚 */
-        footer {
-            background: var(--dark-bg);
-            color: var(--text-dark);
-            padding: 60px 0 30px;
-        }
+    .core-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
 
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
+    .pulse {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
 
-        .footer-section h4 {
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
+    .pulse::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px var(--accent);
+      content: "";
+    }
 
-        .footer-section p, .footer-section a {
-            color: var(--text-secondary-dark);
-            margin-bottom: 0.5rem;
-            text-decoration: none;
-        }
+    .core-card h2 {
+      margin: 20px 0 8px;
+      font-size: 29px;
+      line-height: 1.18;
+    }
 
-        .footer-section a:hover {
-            color: var(--primary-color);
-        }
+    .core-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
 
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary-dark);
-        }
+    .signal-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 22px;
+    }
 
-        /* Telegram悬浮按钮 - 简化版，只显示图标 */
-        .telegram-float {
-            position: fixed;
-            right: 25px;
-            bottom: 25px;
-            z-index: 9999;
-        }
+    .signal {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--bg) 38%, transparent);
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-        .telegram-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #0088cc, #34b7f1);
-            border-radius: 50%;
-            color: white;
-            font-size: 28px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.3);
-            transition: all 0.3s ease;
-            border: 2px solid white;
-        }
+    .signal b {
+      color: var(--text);
+    }
 
-        .telegram-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.5);
-        }
+    .node {
+      position: absolute;
+      display: grid;
+      width: 68px;
+      height: 68px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+      box-shadow: 0 18px 44px color-mix(in srgb, var(--accent-2) 12%, transparent);
+      color: var(--accent-2);
+    }
 
-        /* Telegram图标脉冲动画 */
-        .telegram-button i {
-            position: relative;
-            z-index: 2;
-        }
+    .node svg {
+      width: 27px;
+      height: 27px;
+    }
 
-        .telegram-button:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            opacity: 0;
-            transform: scale(1);
-            transition: opacity 0.3s, transform 0.3s;
-        }
+    .node.one {
+      top: 78px;
+      left: 16%;
+    }
 
-        .telegram-button:hover:before {
-            opacity: 1;
-            transform: scale(1.2);
-        }
+    .node.two {
+      top: 120px;
+      right: 8%;
+      color: var(--accent);
+    }
 
-        /* 响应式设计 - 移动端适配 */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .arch-step {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .step-number {
-                margin-right: 0;
-                margin-bottom: 1rem;
-            }
-            
-            /* 移动端Telegram按钮适配 */
-            .telegram-float {
-                right: 15px;
-                bottom: 15px;
-            }
-            
-            .telegram-button {
-                width: 55px;
-                height: 55px;
-                font-size: 24px;
-            }
-        }
+    .node.three {
+      right: 21%;
+      bottom: 50px;
+      color: var(--accent-3);
+    }
 
-        @media (max-width: 480px) {
-            .telegram-button {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
-            }
-            
-            .telegram-float {
-                right: 10px;
-                bottom: 10px;
-            }
-        }
+    .node.four {
+      bottom: 110px;
+      left: 3%;
+      color: var(--danger);
+    }
 
-        /* 打印样式优化 - 打印时隐藏Telegram按钮 */
-        @media print {
-            .telegram-float {
-                display: none !important;
-            }
-        }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 32px;
+      margin-bottom: 34px;
+    }
 
-        /* 无障碍访问优化 */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
+    .section-title {
+      max-width: 720px;
+    }
 
-        /* 焦点可见性 */
-        a:focus,
-        button:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .section-title p {
+      max-width: 680px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .feature-card,
+    .scenario,
+    .advantage,
+    .contact-panel,
+    .deploy-panel,
+    .flow-step {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      box-shadow: 0 18px 54px color-mix(in srgb, #000 12%, transparent);
+    }
+
+    .feature-card {
+      min-height: 220px;
+      padding: 24px;
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--accent-2) 44%, var(--line));
+    }
+
+    .icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent-2) 14%, transparent);
+      color: var(--accent-2);
+    }
+
+    .icon svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .feature-card h3,
+    .advantage h3,
+    .scenario h3,
+    .flow-step h3 {
+      margin: 20px 0 10px;
+      font-size: 20px;
+      line-height: 1.24;
+    }
+
+    .feature-card p,
+    .advantage p,
+    .scenario p,
+    .flow-step p,
+    .deploy-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .deploy {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .deploy-panel {
+      padding: 30px;
+    }
+
+    .deploy-panel.primary-panel {
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent 52%),
+        color-mix(in srgb, var(--surface-strong) 92%, transparent);
+    }
+
+    .deploy-panel h2 {
+      margin: 0 0 16px;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.08;
+    }
+
+    .deploy-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .deploy-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .deploy-item svg {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      color: var(--accent);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .flow-step {
+      position: relative;
+      min-height: 194px;
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    .step-number {
+      color: color-mix(in srgb, var(--accent-2) 36%, transparent);
+      font-size: 52px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .scenario {
+      min-height: 150px;
+      padding: 20px;
+    }
+
+    .scenario h3 {
+      margin-top: 14px;
+      font-size: 18px;
+    }
+
+    .scenario .icon {
+      width: 38px;
+      height: 38px;
+      background: color-mix(in srgb, var(--accent) 13%, transparent);
+      color: var(--accent);
+    }
+
+    .advantage-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .advantage {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .sdk-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-strong) 70%, transparent);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 760;
+    }
+
+    .contact {
+      padding-bottom: 110px;
+    }
+
+    .contact-panel {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 28px;
+      align-items: center;
+      padding: clamp(28px, 5vw, 52px);
+      background:
+        linear-gradient(120deg, color-mix(in srgb, var(--accent-2) 15%, transparent), transparent 40%),
+        linear-gradient(300deg, color-mix(in srgb, var(--accent) 20%, transparent), transparent 42%),
+        color-mix(in srgb, var(--surface-strong) 92%, transparent);
+    }
+
+    .contact-panel h2 {
+      margin: 0;
+      font-size: clamp(26px, 3.8vw, 44px);
+      line-height: 1.12;
+    }
+
+    .contact-panel p {
+      max-width: 760px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .telegram {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 56px;
+      padding: 0 22px;
+      border-radius: var(--radius);
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    footer {
+      width: min(100% - 40px, var(--max));
+      margin: 0 auto;
+      padding: 26px 0 38px;
+      border-top: 1px solid var(--line);
+      color: var(--soft);
+      font-size: 13px;
+    }
+
+    [data-i18n] {
+      transition: opacity 120ms ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .node {
+        animation: float 5.6s ease-in-out infinite;
+      }
+
+      .node.two {
+        animation-delay: -1.2s;
+      }
+
+      .node.three {
+        animation-delay: -2.4s;
+      }
+
+      .node.four {
+        animation-delay: -3.2s;
+      }
+
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0);
         }
-    </style>
+        50% {
+          transform: translateY(-12px);
+        }
+      }
+    }
+
+    @media (max-width: 1020px) {
+      .nav-inner {
+        flex-wrap: wrap;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: 0;
+      }
+
+      .hero-visual {
+        min-height: 470px;
+      }
+
+      .feature-grid,
+      .flow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .scenario-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .deploy,
+      .contact-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .nav-inner,
+      .section,
+      footer {
+        width: min(100% - 28px, var(--max));
+      }
+
+      .brand span {
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .nav-actions {
+        margin-left: auto;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .proof-row,
+      .feature-grid,
+      .flow,
+      .scenario-grid,
+      .advantage-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 64px 0;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .hero-visual {
+        min-height: 430px;
+      }
+
+      .defense-orbit {
+        height: 390px;
+      }
+
+      .core-card {
+        width: 86%;
+        padding: 20px;
+      }
+
+      .node {
+        width: 54px;
+        height: 54px;
+      }
+
+      .node.one {
+        left: 4%;
+      }
+
+      .node.two {
+        right: 0;
+      }
+
+      .node.three {
+        right: 12%;
+      }
+
+      .advantage {
+        grid-template-columns: 1fr;
+      }
+
+      .contact {
+        padding-bottom: 70px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar navbar-expand-lg" role="navigation" aria-label="主导航">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-shield-alt me-2" aria-hidden="true"></i>AI盾
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="切换导航">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">核心功能</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#architecture">技术架构</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#use-cases">应用场景</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">联系我们</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- 英雄区域 -->
-    <section class="hero" id="home">
-        <div class="container">
-            <h1>AI驱动的智能网络安全系统</h1>
-            <p>AI盾通过分布式云集群防御及加密通讯混淆技术，为APP应用提供无上限安全防护和规避政策限制</p>
-            <a href="#contact" class="btn btn-primary" role="button">立即咨询</a>
-        </div>
-    </section>
-
-    <!-- 核心功能 -->
-    <section id="features" class="features" aria-labelledby="features-heading">
-        <div class="container">
-            <h2 class="section-title" id="features-heading">核心功能</h2>
-            
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-infinity" aria-hidden="true"></i>
-                        </div>
-                        <h3>无上限防御</h3>
-                        <p>分布式节点部署，攻击流量分散在不同节点消化，实现无上限DDoS/CC攻击防御</p>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-3">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-bolt" aria-hidden="true"></i>
-                        </div>
-                        <h3>智能加速</h3>
-                        <p>在防护攻击的同时为用户访问加速，通过智能调度和链路优化提升用户体验</p>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-3">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-lock" aria-hidden="true"></i>
-                        </div>
-                        <h3>加密隧道</h3>
-                        <p>采用隧道加密通讯技术，隐藏真实服务器IP，帮助应用规避政策限制、绕过访问封锁</p>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-3">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-sync-alt" aria-hidden="true"></i>
-                        </div>
-                        <h3>秒级调度</h3>
-                        <p>客户端级别秒级智能调度，精准引流恶意流量，保障正常业务访问</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 技术架构 -->
-    <section id="architecture" class="architecture" aria-labelledby="architecture-heading">
-        <div class="container">
-            <h2 class="section-title" id="architecture-heading">技术架构</h2>
-            
-            <div class="arch-steps">
-                <div class="arch-step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>客户端SDK集成</h3>
-                        <p>轻量级SDK集成到APP中，提供请求加密、链路探测和智能调度功能</p>
-                    </div>
-                </div>
-                
-                <div class="arch-step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>智能调度中心</h3>
-                        <p>加密调度系统实现客户端级别的秒级调度，精准引流攻击流量</p>
-                    </div>
-                </div>
-                
-                <div class="arch-step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>分布式防护层</h3>
-                        <p>全球分布式云集群，智能识别并清洗DDoS/CC攻击流量</p>
-                    </div>
-                </div>
-                
-                <div class="arch-step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>源站保护层</h3>
-                        <p>使用动态虚拟IP连接，任何DDoS攻击流量都无法进入隧道，同时隐藏真实服务器IP</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 应用场景 -->
-    <section id="use-cases" class="use-cases" aria-labelledby="use-cases-heading">
-        <div class="container">
-            <h2 class="section-title" id="use-cases-heading">应用场景</h2>
-            
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="case-card">
-                        <div class="case-icon">
-                            <i class="fas fa-gamepad" aria-hidden="true"></i>
-                        </div>
-                        <h3>游戏行业</h3>
-                        <ul>
-                            <li>防御DDoS/CC攻击</li>
-                            <li>TCP协议层防护</li>
-                            <li>实时对战加速</li>
-                            <li>玩家体验优化</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="case-card">
-                        <div class="case-icon">
-                            <i class="fas fa-comments" aria-hidden="true"></i>
-                        </div>
-                        <h3>社交直播</h3>
-                        <ul>
-                            <li>端到端加密通讯</li>
-                            <li>高并发流量防护</li>
-                            <li>直播流加速</li>
-                            <li>数据安全保护</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="case-card">
-                        <div class="case-icon">
-                            <i class="fas fa-university" aria-hidden="true"></i>
-                        </div>
-                        <h3>金融应用</h3>
-                        <ul>
-                            <li>交易数据加密</li>
-                            <li>业务连续性保障</li>
-                            <li>合规安全防护</li>
-                            <li>实时风险控制</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 页脚 -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>AI盾</h4>
-                    <p>专注于APP研发的防护产品,提供windows,Android,IOS版本的SDK集成,为企业提供高性价比的零信任安全解决方案</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>联系我们</h4>
-                    
-                    <p><i class="fas fa-phone me-2" aria-hidden="true"></i>WhatsApp:+44 7925060092</p>
-                    <p><i class="fas fa-map-marker-alt me-2" aria-hidden="true"></i>Telegram: @DUNSDK</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>快速链接</h4>
-                    <p><a href="#features">核心功能</a></p>
-                    <p><a href="#architecture">技术架构</a></p>
-                    <p><a href="#use-cases">应用场景</a></p>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 AI盾. 保留所有权利.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Telegram悬浮按钮 - 简化版，只显示图标 -->
-    <div class="telegram-float" role="complementary" aria-label="Telegram">
-        <a href="https://t.me/dunsdk" 
-           class="telegram-button" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           aria-label="通过Telegram联系客服"
-           title="点击添加Telegram客服好友">
-            <i class="fab fa-telegram-plane" aria-hidden="true"></i>
-            <span class="sr-only">通过Telegram联系客服</span>
+  <div class="page-shell">
+    <header class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="#top" aria-label="Game Shield SDK">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3 5 6v5c0 4.7 2.8 8 7 10 4.2-2 7-5.3 7-10V6l-7-3Z" />
+              <path d="M9 12.2 11 14l4-4.4" />
+            </svg>
+          </span>
+          <span data-i18n="brand">游戏盾 SDK</span>
         </a>
-    </div>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#features" data-i18n="navFeatures">核心能力</a>
+          <a href="#deploy" data-i18n="navDeploy">私有化部署</a>
+          <a href="#principle" data-i18n="navPrinciple">防护原理</a>
+          <a href="#scenarios" data-i18n="navScenarios">应用场景</a>
+          <a href="access.html" data-i18n="navDocs">接入说明</a>
+        </nav>
+        <div class="nav-actions">
+          <div class="segmented" aria-label="Language switcher">
+            <button class="active" type="button" data-lang="zh">中</button>
+            <button type="button" data-lang="en">EN</button>
+          </div>
+          <button class="icon-button" type="button" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+            <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v2" />
+              <path d="M12 19v2" />
+              <path d="m4.22 4.22 1.42 1.42" />
+              <path d="m18.36 18.36 1.42 1.42" />
+              <path d="M3 12h2" />
+              <path d="M19 12h2" />
+              <path d="m4.22 19.78 1.42-1.42" />
+              <path d="m18.36 5.64 1.42-1.42" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // 平滑滚动功能
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
+    <main id="top">
+      <section class="section hero">
+        <div class="hero-copy">
+          <h1 data-i18n="heroTitle">云层-游戏盾 SDK<br><span class="gradient-text">AI 驱动的 DDoS 防护引擎</span></h1>
+          <p class="hero-lede" data-i18n="heroLead">专为 APP 与在线游戏研发的安全防护产品，提供 Windows、Android、iOS 多端 SDK 集成，满足抗 DDoS、抗 CC、流量加密、防 DNS 劫持、防屏蔽等核心业务需求。</p>
+          <div class="hero-actions">
+            <a class="button primary" href="https://t.me/youxidun" target="_blank" rel="noreferrer">
+              <span data-i18n="primaryCta">Telegram 咨询</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
+            </a>
+            <a class="button secondary" href="#deploy" data-i18n="secondaryCta">查看私有化方案</a>
+          </div>
+          <div class="proof-row" aria-label="Product highlights">
+            <div class="proof-item">
+              <strong data-i18n="proofOneValue">独立部署</strong>
+              <span data-i18n="proofOneLabel">SDK、验证端、节点全套隔离</span>
+            </div>
+            <div class="proof-item">
+              <strong data-i18n="proofTwoValue">多端接入</strong>
+              <span data-i18n="proofTwoLabel">Windows / Android / iOS</span>
+            </div>
+            <div class="proof-item">
+              <strong data-i18n="proofThreeValue">源码维护</strong>
+              <span data-i18n="proofThreeLabel">支持二次开发与应急响应</span>
+            </div>
+          </div>
+        </div>
 
-        // 移动端导航菜单关闭
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function() {
-                const navbarCollapse = document.getElementById('navbarNav');
-                if(navbarCollapse.classList.contains('show')) {
-                    const bsCollapse = new bootstrap.Collapse(navbarCollapse);
-                    bsCollapse.hide();
-                }
-            });
-        });
+        <div class="hero-visual" aria-hidden="true">
+          <div class="defense-orbit"></div>
+          <div class="node one">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10" /><path d="M2 19h20" /><path d="M8 9h8" /><path d="M8 13h5" /></svg>
+          </div>
+          <div class="node two">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01" /><path d="M8 6.7a6 6 0 0 1 8 0" /><path d="M5 3.8a10 10 0 0 1 14 0" /><path d="M9.5 10.6a3.5 3.5 0 0 1 5 0" /></svg>
+          </div>
+          <div class="node three">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20" /><path d="M2 12h20" /><path d="M4.9 4.9 19.1 19.1" /><path d="M19.1 4.9 4.9 19.1" /></svg>
+          </div>
+          <div class="node four">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 18 18" /><path d="M5.6 5.6A9 9 0 0 0 12 21a9 9 0 0 0 8.4-12.2" /><path d="M9 3.5A9 9 0 0 1 20.5 15" /></svg>
+          </div>
+          <div class="core-card">
+            <div class="core-status">
+              <span class="pulse" data-i18n="visualStatus">AI Defense Active</span>
+              <span data-i18n="visualLatency">低延迟链路</span>
+            </div>
+            <h2 data-i18n="visualTitle">虚拟 IP 隧道防护</h2>
+            <p data-i18n="visualText">客户端 SDK 调度分布式节点，通过全链路加密通讯隐藏源服务器，让攻击流量无法进入业务隧道。</p>
+            <div class="signal-list">
+              <div class="signal"><b data-i18n="signalOne">DDoS / CC 清洗</b><span data-i18n="signalOneState">在线</span></div>
+              <div class="signal"><b data-i18n="signalTwo">DNS 劫持防护</b><span data-i18n="signalTwoState">加固</span></div>
+              <div class="signal"><b data-i18n="signalThree">BGP 网络加速</b><span data-i18n="signalThreeState">智能调度</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        // Telegram按钮点击事件
-        const telegramButton = document.querySelector('.telegram-button');
-        if (telegramButton) {
-            telegramButton.addEventListener('click', function(e) {
-                console.log('Telegram客服链接被点击');
-            });
+      <section class="section" id="features">
+        <div class="section-head">
+          <div class="section-title">
+            <span class="eyebrow" data-i18n="featuresEyebrow">Core Capabilities</span>
+            <h2 data-i18n="featuresTitle">为强对抗、高并发、低延迟业务打造的安全底座</h2>
+            <p data-i18n="featuresLead">覆盖抗攻击、链路加密、源站隐藏、节点调度与可视化管理，帮助游戏、金融、电商、直播等 APP 业务在攻击环境下稳定运行。</p>
+          </div>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.7 2.8 8 7 10 4.2-2 7-5.3 7-10V6l-7-3Z" /></svg></div>
+            <h3 data-i18n="featureOneTitle">分布式防御体系</h3>
+            <p data-i18n="featureOneText">海量节点智能调度，支持 UDP/TCP 洪水攻击防护，异常流量在边缘侧被识别、拦截与清洗。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6Z" /><circle cx="12" cy="12" r="3" /></svg></div>
+            <h3 data-i18n="featureTwoTitle">隐藏源服务器</h3>
+            <p data-i18n="featureTwoText">通过虚拟 IP 与安全隧道隐藏真实业务入口，降低源站暴露、封锁与定向攻击风险。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V7a4 4 0 0 1 8 0v4" /><rect x="5" y="11" width="14" height="10" rx="2" /></svg></div>
+            <h3 data-i18n="featureThreeTitle">全链路加密通讯</h3>
+            <p data-i18n="featureThreeText">SDK 与节点之间建立加密链路，兼顾数据隐私、防篡改与接入安全，适配多端 APP 场景。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h6l2-7 2 14 2-7h6" /></svg></div>
+            <h3 data-i18n="featureFourTitle">零误封策略</h3>
+            <p data-i18n="featureFourText">精细化流量识别与行为判定，在清洗攻击的同时尽量保障正常玩家与真实用户访问体验。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h10" /></svg></div>
+            <h3 data-i18n="featureFiveTitle">可视化管理</h3>
+            <p data-i18n="featureFiveText">支持防护策略、节点状态、攻击态势与业务链路统一管理，让安全运维更直观。</p>
+          </article>
+          <article class="feature-card">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5" /><path d="M8 21H3v-5" /><path d="M21 3 14 10" /><path d="M3 21l7-7" /></svg></div>
+            <h3 data-i18n="featureSixTitle">弹性扩展节点</h3>
+            <p data-i18n="featureSixText">可根据业务规模自建防护节点并动态扩容，适合高峰活动、版本上线与长期运营。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="deploy">
+        <div class="deploy">
+          <div class="deploy-panel primary-panel">
+            <span class="eyebrow" data-i18n="deployEyebrow">Private Deployment</span>
+            <h2 data-i18n="deployTitle">完整程序部署至客户环境，与其他用户完全隔离</h2>
+            <p data-i18n="deployLead">支持 SDK、验证端、调度服务、防护节点等组件私有化部署，客户可获得更高的数据控制权、链路稳定性与隐私保护。</p>
+            <div class="sdk-strip">
+              <span class="tag">Windows</span>
+              <span class="tag">Android</span>
+              <span class="tag">iOS</span>
+              <span class="tag">Unity</span>
+              <span class="tag">Cocos</span>
+              <span class="tag">Flutter</span>
+              <span class="tag">UniApp</span>
+            </div>
+          </div>
+          <div class="deploy-panel">
+            <div class="deploy-list">
+              <div class="deploy-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                <span data-i18n="deployItemOne">授权模式收费，不按日活、带宽或使用量设置套餐，授权后无功能与用量限制。</span>
+              </div>
+              <div class="deploy-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                <span data-i18n="deployItemTwo">支持源码集成、无源码逆向集成、源码二次开发与完整源码级维护。</span>
+              </div>
+              <div class="deploy-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                <span data-i18n="deployItemThree">提供日常技术支持、应急响应与技术培训，帮助客户技术团队自行维护。</span>
+              </div>
+              <div class="deploy-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                <span data-i18n="deployItemFour">可出售源码，支持独立产品化、节点自建与后续安全能力持续演进。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="principle">
+        <div class="section-head">
+          <div class="section-title">
+            <span class="eyebrow" data-i18n="principleEyebrow">How It Works</span>
+            <h2 data-i18n="principleTitle">从客户端 SDK 到分布式节点，构建不可直达的安全链路</h2>
+            <p data-i18n="principleLead">通过客户端防御模块调度节点、建立虚拟 IP 隧道并进行全链路加密，攻击流量无法直接进入业务通道。</p>
+          </div>
+        </div>
+        <div class="flow">
+          <article class="flow-step">
+            <div class="step-number">01</div>
+            <h3 data-i18n="flowOneTitle">SDK 集成</h3>
+            <p data-i18n="flowOneText">原生 APP、游戏引擎与跨端框架快速接入防护模块。</p>
+          </article>
+          <article class="flow-step">
+            <div class="step-number">02</div>
+            <h3 data-i18n="flowTwoTitle">身份验证</h3>
+            <p data-i18n="flowTwoText">验证端完成接入校验与策略下发，阻断异常来源。</p>
+          </article>
+          <article class="flow-step">
+            <div class="step-number">03</div>
+            <h3 data-i18n="flowThreeTitle">节点调度</h3>
+            <p data-i18n="flowThreeText">根据质量、攻击态势与区域进行智能节点切换。</p>
+          </article>
+          <article class="flow-step">
+            <div class="step-number">04</div>
+            <h3 data-i18n="flowFourTitle">加密隧道</h3>
+            <p data-i18n="flowFourText">虚拟 IP 承载安全通讯，隐藏源站并隔离攻击流量。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="scenarios">
+        <div class="section-head">
+          <div class="section-title">
+            <span class="eyebrow" data-i18n="scenariosEyebrow">Use Cases</span>
+            <h2 data-i18n="scenariosTitle">适用于多类 APP 与实时交互业务</h2>
+            <p data-i18n="scenariosLead">面向游戏、电商、金融、物联网、直播等场景，提供稳定、可控、可持续演进的防护方案。</p>
+          </div>
+        </div>
+        <div class="scenario-grid">
+          <article class="scenario">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h4" /><path d="M8 10v4" /><path d="M15 13h.01" /><path d="M18 11h.01" /><rect x="3" y="7" width="18" height="10" rx="5" /></svg></div>
+            <h3 data-i18n="scenarioOneTitle">游戏</h3>
+            <p data-i18n="scenarioOneText">高并发、强对抗、低延迟。</p>
+          </article>
+          <article class="scenario">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z" /><path d="M9 7a3 3 0 0 1 6 0" /></svg></div>
+            <h3 data-i18n="scenarioTwoTitle">电商</h3>
+            <p data-i18n="scenarioTwoText">大促峰值、接口防刷、访问稳定。</p>
+          </article>
+          <article class="scenario">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18" /><path d="M5 10V7l7-4 7 4v3" /><path d="M6 14v4" /><path d="M10 14v4" /><path d="M14 14v4" /><path d="M18 14v4" /><path d="M4 21h16" /></svg></div>
+            <h3 data-i18n="scenarioThreeTitle">金融</h3>
+            <p data-i18n="scenarioThreeText">加密链路、隐私隔离、风险控制。</p>
+          </article>
+          <article class="scenario">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v12" /><path d="M6 12h12" /><circle cx="12" cy="12" r="9" /></svg></div>
+            <h3 data-i18n="scenarioFourTitle">物联网</h3>
+            <p data-i18n="scenarioFourText">海量终端、节点调度、链路防护。</p>
+          </article>
+          <article class="scenario">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m10 8 6 4-6 4V8Z" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg></div>
+            <h3 data-i18n="scenarioFiveTitle">直播</h3>
+            <p data-i18n="scenarioFiveText">实时互动、稳定传输、防屏蔽。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="section-title">
+            <span class="eyebrow" data-i18n="advantagesEyebrow">Advantages</span>
+            <h2 data-i18n="advantagesTitle">从免费测试到 7×24 支持，围绕上线与运营全周期服务</h2>
+          </div>
+        </div>
+        <div class="advantage-grid">
+          <article class="advantage">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" /></svg></div>
+            <div>
+              <h3 data-i18n="advantageOneTitle">接入方式灵活</h3>
+              <p data-i18n="advantageOneText">支持源码集成与无源码逆向集成，适配原生 APP、Unity、Cocos、Flutter、UniApp 等技术栈。</p>
+            </div>
+          </article>
+          <article class="advantage">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6l4-4" /><path d="M12 22v-6l-4 4" /><path d="M20 12h-6l4 4" /><path d="M4 12h6l-4-4" /></svg></div>
+            <div>
+              <h3 data-i18n="advantageTwoTitle">快速应急响应</h3>
+              <p data-i18n="advantageTwoText">结合源码级维护与专属客服，支持攻击期间快速分析、策略调整与节点扩展。</p>
+            </div>
+          </article>
+          <article class="advantage">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5" /><path d="M4 19h16" /><path d="m7 15 4-4 3 3 5-7" /></svg></div>
+            <div>
+              <h3 data-i18n="advantageThreeTitle">无防护上限思路</h3>
+              <p data-i18n="advantageThreeText">支持自建节点与弹性扩展，可根据攻击规模和业务增长持续提升整体防护能力。</p>
+            </div>
+          </article>
+          <article class="advantage">
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2" /><circle cx="12" cy="12" r="9" /></svg></div>
+            <div>
+              <h3 data-i18n="advantageFourTitle">7×24 在线支持</h3>
+              <p data-i18n="advantageFourText">提供日常技术支持、上线协助、免费测试与技术培训，保障客户团队长期可维护。</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section contact" id="contact">
+        <div class="contact-panel">
+          <div>
+            <h2 data-i18n="contactTitle">需要私有化游戏盾防护方案？</h2>
+            <p data-i18n="contactText">可提供免费测试、源码授权、独立部署、节点规划与技术培训。适合正在遭受攻击、准备上线或需要构建长期安全能力的团队。</p>
+          </div>
+          <a class="telegram" href="https://t.me/youxidun" target="_blank" rel="noreferrer">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4 20-7Z" /><path d="M22 2 11 13" /></svg>
+            @youxidun
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span data-i18n="footerText">游戏盾 SDK · AI DDoS Defense · 私有化部署 / 源码维护 / 多端 SDK 集成</span>
+    </footer>
+  </div>
+
+  <script>
+    const copy = {
+      zh: {
+        brand: "游戏盾 SDK",
+        navFeatures: "核心能力",
+        navDeploy: "私有化部署",
+        navPrinciple: "防护原理",
+        navScenarios: "应用场景",
+        navDocs: "接入说明",
+        heroTitle: "游戏盾 SDK<br><span class=\"gradient-text\">AI 驱动的 DDoS 防护引擎</span>",
+        heroLead: "专为 APP 与在线游戏研发的安全防护产品，提供 Windows、Android、iOS 多端 SDK 集成，满足抗 DDoS、抗 CC、流量加密、防 DNS 劫持、防屏蔽等核心业务需求。",
+        primaryCta: "Telegram 咨询",
+        secondaryCta: "查看私有化方案",
+        proofOneValue: "独立部署",
+        proofOneLabel: "SDK、验证端、节点全套隔离",
+        proofTwoValue: "多端接入",
+        proofTwoLabel: "Windows / Android / iOS",
+        proofThreeValue: "源码维护",
+        proofThreeLabel: "支持二次开发与应急响应",
+        visualStatus: "AI Defense Active",
+        visualLatency: "低延迟链路",
+        visualTitle: "虚拟 IP 隧道防护",
+        visualText: "客户端 SDK 调度分布式节点，通过全链路加密通讯隐藏源服务器，让攻击流量无法进入业务隧道。",
+        signalOne: "DDoS / CC 清洗",
+        signalOneState: "在线",
+        signalTwo: "DNS 劫持防护",
+        signalTwoState: "加固",
+        signalThree: "BGP 网络加速",
+        signalThreeState: "智能调度",
+        featuresEyebrow: "Core Capabilities",
+        featuresTitle: "为强对抗、高并发、低延迟业务打造的安全底座",
+        featuresLead: "覆盖抗攻击、链路加密、源站隐藏、节点调度与可视化管理，帮助游戏、金融、电商、直播等 APP 业务在攻击环境下稳定运行。",
+        featureOneTitle: "分布式防御体系",
+        featureOneText: "海量节点智能调度，支持 UDP/TCP 洪水攻击防护，异常流量在边缘侧被识别、拦截与清洗。",
+        featureTwoTitle: "隐藏源服务器",
+        featureTwoText: "通过虚拟 IP 与安全隧道隐藏真实业务入口，降低源站暴露、封锁与定向攻击风险。",
+        featureThreeTitle: "全链路加密通讯",
+        featureThreeText: "SDK 与节点之间建立加密链路，兼顾数据隐私、防篡改与接入安全，适配多端 APP 场景。",
+        featureFourTitle: "零误封策略",
+        featureFourText: "精细化流量识别与行为判定，在清洗攻击的同时尽量保障正常玩家与真实用户访问体验。",
+        featureFiveTitle: "可视化管理",
+        featureFiveText: "支持防护策略、节点状态、攻击态势与业务链路统一管理，让安全运维更直观。",
+        featureSixTitle: "弹性扩展节点",
+        featureSixText: "可根据业务规模自建防护节点并动态扩容，适合高峰活动、版本上线与长期运营。",
+        deployEyebrow: "Private Deployment",
+        deployTitle: "完整程序部署至客户环境，与其他用户完全隔离",
+        deployLead: "支持 SDK、验证端、调度服务、防护节点等组件私有化部署，客户可获得更高的数据控制权、链路稳定性与隐私保护。",
+        deployItemOne: "授权模式收费，不按日活、带宽或使用量设置套餐，授权后无功能与用量限制。",
+        deployItemTwo: "支持源码集成、无源码逆向集成、源码二次开发与完整源码级维护。",
+        deployItemThree: "提供日常技术支持、应急响应与技术培训，帮助客户技术团队自行维护。",
+        deployItemFour: "可出售源码，支持独立产品化、节点自建与后续安全能力持续演进。",
+        principleEyebrow: "How It Works",
+        principleTitle: "从客户端 SDK 到分布式节点，构建不可直达的安全链路",
+        principleLead: "通过客户端防御模块调度节点、建立虚拟 IP 隧道并进行全链路加密，攻击流量无法直接进入业务通道。",
+        flowOneTitle: "SDK 集成",
+        flowOneText: "原生 APP、游戏引擎与跨端框架快速接入防护模块。",
+        flowTwoTitle: "身份验证",
+        flowTwoText: "验证端完成接入校验与策略下发，阻断异常来源。",
+        flowThreeTitle: "节点调度",
+        flowThreeText: "根据质量、攻击态势与区域进行智能节点切换。",
+        flowFourTitle: "加密隧道",
+        flowFourText: "虚拟 IP 承载安全通讯，隐藏源站并隔离攻击流量。",
+        scenariosEyebrow: "Use Cases",
+        scenariosTitle: "适用于多类 APP 与实时交互业务",
+        scenariosLead: "面向游戏、电商、金融、物联网、直播等场景，提供稳定、可控、可持续演进的防护方案。",
+        scenarioOneTitle: "游戏",
+        scenarioOneText: "高并发、强对抗、低延迟。",
+        scenarioTwoTitle: "电商",
+        scenarioTwoText: "大促峰值、接口防刷、访问稳定。",
+        scenarioThreeTitle: "金融",
+        scenarioThreeText: "加密链路、隐私隔离、风险控制。",
+        scenarioFourTitle: "物联网",
+        scenarioFourText: "海量终端、节点调度、链路防护。",
+        scenarioFiveTitle: "直播",
+        scenarioFiveText: "实时互动、稳定传输、防屏蔽。",
+        advantagesEyebrow: "Advantages",
+        advantagesTitle: "从免费测试到 7×24 支持，围绕上线与运营全周期服务",
+        advantageOneTitle: "接入方式灵活",
+        advantageOneText: "支持源码集成与无源码逆向集成，适配原生 APP、Unity、Cocos、Flutter、UniApp 等技术栈。",
+        advantageTwoTitle: "快速应急响应",
+        advantageTwoText: "结合源码级维护与专属客服，支持攻击期间快速分析、策略调整与节点扩展。",
+        advantageThreeTitle: "无防护上限思路",
+        advantageThreeText: "支持自建节点与弹性扩展，可根据攻击规模和业务增长持续提升整体防护能力。",
+        advantageFourTitle: "7×24 在线支持",
+        advantageFourText: "提供日常技术支持、上线协助、免费测试与技术培训，保障客户团队长期可维护。",
+        contactTitle: "需要私有化游戏盾防护方案？",
+        contactText: "可提供免费测试、源码授权、独立部署、节点规划与技术培训。适合正在遭受攻击、准备上线或需要构建长期安全能力的团队。",
+        footerText: "游戏盾 SDK · AI DDoS Defense · 私有化部署 / 源码维护 / 多端 SDK 集成"
+      },
+      en: {
+        brand: "Game Shield SDK",
+        navFeatures: "Capabilities",
+        navDeploy: "Private Deployment",
+        navPrinciple: "Architecture",
+        navScenarios: "Use Cases",
+        navDocs: "Integration",
+        heroTitle: "Game Shield SDK<br><span class=\"gradient-text\">AI-Powered DDoS Defense Engine</span>",
+        heroLead: "A security product built for apps and online games, with SDK integration for Windows, Android, and iOS. It covers DDoS and CC mitigation, encrypted traffic, DNS hijacking protection, and anti-blocking requirements.",
+        primaryCta: "Contact on Telegram",
+        secondaryCta: "View Private Deployment",
+        proofOneValue: "Isolated Deploy",
+        proofOneLabel: "SDK, validation service, and nodes in your environment",
+        proofTwoValue: "Multi-Platform",
+        proofTwoLabel: "Windows / Android / iOS",
+        proofThreeValue: "Source-Level",
+        proofThreeLabel: "Secondary development and emergency response",
+        visualStatus: "AI Defense Active",
+        visualLatency: "Low-Latency Path",
+        visualTitle: "Virtual IP Tunnel Defense",
+        visualText: "The client SDK schedules distributed nodes and hides the origin server through encrypted end-to-end communication, keeping attack traffic outside the service tunnel.",
+        signalOne: "DDoS / CC Scrubbing",
+        signalOneState: "Online",
+        signalTwo: "DNS Hijack Defense",
+        signalTwoState: "Hardened",
+        signalThree: "BGP Acceleration",
+        signalThreeState: "Smart Routing",
+        featuresEyebrow: "Core Capabilities",
+        featuresTitle: "A security foundation for adversarial, high-concurrency, low-latency businesses",
+        featuresLead: "From attack mitigation and encrypted links to origin hiding, node orchestration, and visual operations, Game Shield SDK helps app businesses stay stable under attack.",
+        featureOneTitle: "Distributed Defense",
+        featureOneText: "Massive node scheduling protects against UDP/TCP floods, identifying, blocking, and scrubbing abnormal traffic at the edge.",
+        featureTwoTitle: "Origin Server Hiding",
+        featureTwoText: "Virtual IPs and secure tunnels conceal real service entry points, reducing exposure, blocking, and targeted attack risk.",
+        featureThreeTitle: "Encrypted Communication",
+        featureThreeText: "Encrypted links between SDK and nodes protect privacy, prevent tampering, and support secure access across app platforms.",
+        featureFourTitle: "Low False Blocking",
+        featureFourText: "Fine-grained traffic recognition and behavior decisions scrub attacks while preserving the experience of real players and users.",
+        featureFiveTitle: "Visual Management",
+        featureFiveText: "Manage protection policies, node status, attack posture, and service links in one operational view.",
+        featureSixTitle: "Elastic Node Scaling",
+        featureSixText: "Build and expand protection nodes as your business grows, covering launch spikes, events, and long-term operations.",
+        deployEyebrow: "Private Deployment",
+        deployTitle: "Deploy the full stack in your own environment, isolated from all other customers",
+        deployLead: "SDK, validation services, schedulers, and protection nodes can be privately deployed for stronger control, link stability, and privacy.",
+        deployItemOne: "License-based pricing, not packaged by DAU, bandwidth, or usage. No feature or usage limits after authorization.",
+        deployItemTwo: "Supports source-code integration, no-source reverse integration, secondary development, and source-level maintenance.",
+        deployItemThree: "Daily technical support, emergency response, and training help your engineering team operate independently.",
+        deployItemFour: "Source code can be licensed for independent productization, self-built nodes, and continuous security evolution.",
+        principleEyebrow: "How It Works",
+        principleTitle: "From client SDK to distributed nodes, build a secure path that attackers cannot directly reach",
+        principleLead: "The client defense module schedules nodes, establishes virtual IP tunnels, and encrypts the full communication path so attack traffic cannot enter the business channel.",
+        flowOneTitle: "SDK Integration",
+        flowOneText: "Quickly integrate the defense module into native apps, game engines, and cross-platform frameworks.",
+        flowTwoTitle: "Validation",
+        flowTwoText: "The validation service checks access and delivers policies to block abnormal sources.",
+        flowThreeTitle: "Node Scheduling",
+        flowThreeText: "Intelligently switch nodes based on quality, attack posture, and region.",
+        flowFourTitle: "Encrypted Tunnel",
+        flowFourText: "Virtual IPs carry secure communication, hide origins, and isolate attack traffic.",
+        scenariosEyebrow: "Use Cases",
+        scenariosTitle: "Built for apps and real-time interactive businesses",
+        scenariosLead: "A stable, controllable, and continuously evolving defense solution for gaming, e-commerce, finance, IoT, live streaming, and more.",
+        scenarioOneTitle: "Gaming",
+        scenarioOneText: "High concurrency, adversarial traffic, low latency.",
+        scenarioTwoTitle: "E-Commerce",
+        scenarioTwoText: "Campaign peaks, anti-abuse APIs, stable access.",
+        scenarioThreeTitle: "Finance",
+        scenarioThreeText: "Encrypted links, privacy isolation, risk control.",
+        scenarioFourTitle: "IoT",
+        scenarioFourText: "Massive terminals, node scheduling, link defense.",
+        scenarioFiveTitle: "Live Streaming",
+        scenarioFiveText: "Real-time interaction, stable transport, anti-blocking.",
+        advantagesEyebrow: "Advantages",
+        advantagesTitle: "From free testing to 24/7 support, covering launch and operations",
+        advantageOneTitle: "Flexible Integration",
+        advantageOneText: "Supports source-code and no-source integration across native apps, Unity, Cocos, Flutter, UniApp, and more.",
+        advantageTwoTitle: "Fast Emergency Response",
+        advantageTwoText: "Source-level maintenance and dedicated support enable rapid analysis, policy tuning, and node expansion during attacks.",
+        advantageThreeTitle: "Expandable Defense",
+        advantageThreeText: "Self-built nodes and elastic expansion let you keep scaling protection as attack volume and business traffic grow.",
+        advantageFourTitle: "24/7 Online Support",
+        advantageFourText: "Daily technical support, launch assistance, free testing, and training keep your team maintainable over time.",
+        contactTitle: "Need a private Game Shield deployment?",
+        contactText: "Free testing, source licensing, isolated deployment, node planning, and technical training are available for teams under attack, preparing to launch, or building long-term security capability.",
+        footerText: "Game Shield SDK · AI DDoS Defense · Private Deployment / Source-Level Maintenance / Multi-Platform SDK"
+      }
+    };
+
+    const root = document.documentElement;
+    const langButtons = document.querySelectorAll("[data-lang]");
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+
+    function setLanguage(lang) {
+      const dictionary = copy[lang];
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      document.querySelectorAll("[data-i18n]").forEach((node) => {
+        const key = node.getAttribute("data-i18n");
+        if (dictionary[key]) {
+          node.innerHTML = dictionary[key];
         }
+      });
+      langButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === lang);
+      });
+      localStorage.setItem("gameShieldLang", lang);
+    }
 
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
-            if (document.referrer) {
-                const referrer = document.referrer.toLowerCase();
-                if (referrer.includes('google') || referrer.includes('baidu') || 
-                    referrer.includes('bing') || referrer.includes('yahoo')) {
-                    console.log('用户来自搜索引擎: ' + document.referrer);
-                }
-            }
-        });
+    function renderThemeIcon(theme) {
+      themeIcon.innerHTML = theme === "dark"
+        ? '<path d="M12 3v2" /><path d="M12 19v2" /><path d="m4.22 4.22 1.42 1.42" /><path d="m18.36 18.36 1.42 1.42" /><path d="M3 12h2" /><path d="M19 12h2" /><path d="m4.22 19.78 1.42-1.42" /><path d="m18.36 5.64 1.42-1.42" /><circle cx="12" cy="12" r="4" />'
+        : '<path d="M12 3a6 6 0 0 0 9 7.2A8 8 0 1 1 12 3Z" />';
+    }
 
-        // 视口变化处理
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                const viewportWidth = window.innerWidth;
-                console.log(`当前视口宽度: ${viewportWidth}px`);
-            }, 250);
-        });
-    </script>
+    function setTheme(theme) {
+      root.dataset.theme = theme;
+      localStorage.setItem("gameShieldTheme", theme);
+      renderThemeIcon(theme);
+    }
+
+    langButtons.forEach((button) => {
+      button.addEventListener("click", () => setLanguage(button.dataset.lang));
+    });
+
+    themeToggle.addEventListener("click", () => {
+      setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+    });
+
+    setLanguage(localStorage.getItem("gameShieldLang") || "zh");
+    setTheme(localStorage.getItem("gameShieldTheme") || "dark");
+  </script>
 </body>
 </html>
